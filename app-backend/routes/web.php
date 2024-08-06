@@ -14,7 +14,7 @@
 */
 
 $router->get('/', function () use ($router) {
-    return '"Project Management" '.$router->app->version();
+    return '"Project Management to github " '.$router->app->version();
 });
 
 $router->group(['prefix' => 'api/'], function () use ($router) {
