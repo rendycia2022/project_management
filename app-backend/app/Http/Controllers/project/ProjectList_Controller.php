@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\v2\project;
+namespace App\Http\Controllers\project;
 use Laravel\Lumen\Routing\Controller as BaseController;
 
 // method
@@ -9,10 +9,8 @@ use Illuminate\Http\Request;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Facades\Hash;
 
-use App\Models\projectModels\sitesModel;
 
-
-class SitesController extends BaseController
+class ProjectList_Controller extends BaseController
 {
 
     public function __construct(){
@@ -20,17 +18,14 @@ class SitesController extends BaseController
         $this->middleware('auth');
 
         // models
-        $this->projectSitesModel = new sitesModel;
 
     }
 
-    public function getMenus(Request $request){
-
-        $sites = $this->projectSitesModel->getMenus();
+    public function show(Request $request){
         
         $status = "200";
         $message = "Ok.";
-        $response = $sites;
+        $response = "router ready.";
 
         $response = array(
             "status"=>$status,

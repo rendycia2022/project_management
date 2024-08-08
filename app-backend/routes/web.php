@@ -32,14 +32,14 @@ $router->group(['prefix' => 'api/'], function () use ($router) {
 
     $router->group(['prefix' => 'project'], function () use ($router) {
         // list 
-        $router->get('/list','v2\project\ProjectList_Controller@show');
+        $router->get('/list','project\ProjectList_Controller@show');
 
         // history
-        $router->get('/update/{day}/{all}','v2\project\UpdateController@show');
-        $router->get('/approvalForm','v2\project\AFController@show');
+        $router->get('/update/{day}/{all}','project\UpdateController@show');
+        $router->get('/approvalForm','project\AFController@show');
         
         // sites
-        $router->get('/sites/menus','v2\project\SitesController@getMenus');
+        $router->get('/sites/menus','project\SitesController@getMenus');
     });
 });
 
