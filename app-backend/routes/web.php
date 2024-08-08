@@ -31,6 +31,9 @@ $router->group(['prefix' => 'api/'], function () use ($router) {
     });
 
     $router->group(['prefix' => 'project'], function () use ($router) {
+        // list 
+        $router->get('/list','v2\project\ProjectList_Controller@show');
+
         // history
         $router->get('/update/{day}/{all}','v2\project\UpdateController@show');
         $router->get('/approvalForm','v2\project\AFController@show');

@@ -76,18 +76,11 @@ class sitesModel extends Model
 
         // project menu start
         $data[$headerIndex] = array(
-            'label'=>'Projects'
+            'label'=>'Sites'
         );
 
         $index = 0;
-        // summary
-        $data[$headerIndex]['items'][$index] = array(
-            'label'=>'Summary',
-            'icon'=>'pi pi-fw pi-desktop',
-            'to'=>'/cia/project/summary',
-        );
-
-        $index++;
+        
         $db_list = $this->db_list();
         for($i=0; $i<count($db_list); $i++){
             $data[$headerIndex]['items'][$index] = array(
