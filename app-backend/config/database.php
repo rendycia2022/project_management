@@ -4,6 +4,17 @@ return [
 
     'default' => 'db_project_management', 
     'connections' => [
+        'db_project' => [
+            'driver' => 'pgsql',
+            'host' => env('DB_PROJECT_HOST', 'localhost'),
+            'port' => env('DB_PROJECT_PORT', '1433'),
+            'database' => env('DB_PROJECT_DATABASE', 'forge'),
+            'username' => env('DB_PROJECT_USERNAME', 'forge'),
+            'password' => env('DB_PROJECT_PASSWORD', ''),
+            'charset' => 'utf8',
+            'prefix' => '',
+            'prefix_indexes' => true,
+        ],
         'db_af' => [
             'driver' => 'pgsql',
             'host' => env('DB_AF_HOST', 'localhost'),

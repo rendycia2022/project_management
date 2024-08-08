@@ -7,26 +7,24 @@ use Illuminate\Support\Facades\DB;
 
 class revenueModel extends Model
 {
+
     public function list(){
-        $data[0] = array(
-            'label'=>'XL',
-            'port'=>'58101',
-            'connection'=>'db_xl',
-            'icon'=>'pi pi-fw pi-bookmark',
-        );
-        $data[1] = array(
-            'label'=>'Indosat',
-            'port'=>'58102',
-            'connection'=>'db_isat',
-            'icon'=>'pi pi-fw pi-bookmark',
-        );
-        $data[2] = array(
-            'label'=>'Approval Form',
-            'port'=>'8022',
-            'connection'=>'db_af',
-            'icon'=>'pi pi-fw pi-bookmark',
+
+        $where = array(
+            array('active', 1),
+            array('created_by', '!=', '8ddcfaf8-865e-46b9-9421-fc6d8b933be2'),
+            array('no_document', '!=', null),
+            array('item', '!=', null),
+            array('qty', '!=', null),
+            array('price', '!=', null),
         );
 
-        return $data;
+        $query = DB::connection('db_project')
+        ->table('project_revenue')
+        ->where($where)
+        ->orderBy('date', 'DESC')
+        ->get();
+        
+        return $query;
     }
 }
