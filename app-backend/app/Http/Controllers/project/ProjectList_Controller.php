@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Hash;
 
 // models
 use App\Models\projectModels\revenueModel;
+use App\Models\projectModels\afModel;
 
 
 class ProjectList_Controller extends BaseController
@@ -22,6 +23,7 @@ class ProjectList_Controller extends BaseController
 
         // models
         $this->revenueModel = new revenueModel;
+        $this->afModel = new afModel;
 
     }
 
@@ -38,10 +40,27 @@ class ProjectList_Controller extends BaseController
 
                 $revenue_total = $revenue_price * $revenue_qty;
 
+                $af_total = 0;
+                $where_af = array(
+                    array('purchase_order', $no_document),
+                    array('active', 1),
+                );
+
+                $af_items = $this->afModel->approval_items($where_af);
+                if(count($af_items)>0){
+                    foreach($af_items as $afi){
+                        $af_item_price = $afi->price;
+
+                        $af_total = $af_total + $af_item_price;
+                    }
+                }
+
                 $data[] = array(
                     "no_document"=>$no_document,
-                    "revenue_date"=>$r->date,
+                    "revenue_price"=>$revenue_price,
+                    "revenue_qty"=>$revenue_qty,
                     "revenue_total"=>$revenue_total,
+                    "af_total"=>$af_total,
                 );
             }
         }
@@ -49,12 +68,12 @@ class ProjectList_Controller extends BaseController
         
         $status = "200";
         $message = "Ok.";
-        $response = $data;
+        $list = $data;
 
         $response = array(
             "status"=>$status,
             "message"=>$message,
-            "response"=>$response,
+            "list"=>$list,
         );
 
         return response()->json($response);
