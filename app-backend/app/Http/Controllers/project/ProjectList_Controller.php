@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Hash;
 // models
 use App\Models\projectModels\revenueModel;
 use App\Models\projectModels\afModel;
+use App\Models\projectModels\sitesModel;
 
 
 class ProjectList_Controller extends BaseController
@@ -24,6 +25,7 @@ class ProjectList_Controller extends BaseController
         // models
         $this->revenueModel = new revenueModel;
         $this->afModel = new afModel;
+        $this->sitesModel = new sitesModel;
 
     }
 
@@ -32,13 +34,15 @@ class ProjectList_Controller extends BaseController
         $data = array();
 
         $revenue = $this->revenueModel->list();
+
+        $link = env('HOST_NAME').env('FRONTEND_PORT').env('APP_PROJECT');
+
         if(count($revenue)>0){
             foreach($revenue as $r){
+                $project_id = $r->project_id;
                 $no_document = $r->no_document;
                 $revenue_qty = $r->qty;
                 $revenue_price = $r->price;
-
-                $revenue_total = $revenue_price * $revenue_qty;
 
                 $af_total = 0;
                 $where_af = array(
@@ -55,12 +59,16 @@ class ProjectList_Controller extends BaseController
                     }
                 }
 
+                $workorders = $this->sitesModel->workorders($no_document);
+                $count_workorders = count($workorders);
+
                 $data[] = array(
                     "no_document"=>$no_document,
+                    "revenue_link"=>$link.'/summary/'.$project_id.'/detail',
                     "revenue_price"=>$revenue_price,
                     "revenue_qty"=>$revenue_qty,
-                    "revenue_total"=>$revenue_total,
                     "af_total"=>$af_total,
+                    "count_workorders"=>$count_workorders,
                 );
             }
         }

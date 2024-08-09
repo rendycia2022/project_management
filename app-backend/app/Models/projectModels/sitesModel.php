@@ -24,49 +24,45 @@ class sitesModel extends Model
         return $data;
     }
 
-    public function getXl(){
+    public function workorders($po_number){
+        $db = $this->db_list();
 
-        $query = DB::connection('db_xl')
-        ->table('workorders')
-        ->select('code','island','area','site_name', 'scope', 'po_number')
-        ->get();
+        $where = array(
+            array('po_number', $po_number),
+        );
 
         $data = array();
-        foreach($query as $list){
-            $data[] = array(
-                "code"=>$list->code,
-                "project"=>$list->island,
-                "area"=>$list->area,
-                "site_name"=>$list->site_name,
-                "sow"=>$list->scope,
-                "po_number"=>$list->po_number,
-            );
+
+        // connection
+        $host = env('HOST_NAME');
+
+        for($i=0; $i<count($db); $i++){
+            $port = $db[$i]['port'];
+
+            if($port == '58101'){
+                $query = DB::connection($db[$i]['connection'])
+                ->table('workorders')
+                ->where($where)
+                ->get();
+
+                if(count($query)>0){
+                    foreach($query as $list){
+                        $workorder_id = $list->id;
+                        $code = $list->code;
+                        $link = $host.$port.'/workorder/scope/'.$code;
+
+                        $data[] = array(
+                            "workorder_id"=>$workorder_id,
+                            "link"=>$link,
+                        );
+                    }
+                }
+            }
         }
-        
+
         return $data;
     }
 
-    public function getIndosat(){
-
-        $query = DB::connection('db_isat')
-        ->table('workorders')
-        ->select('code','project','area','site_name','sow')
-        ->get();
-
-        $data = array();
-        foreach($query as $list){
-            $data[] = array(
-                "code"=>$list->code,
-                "project"=>$list->project,
-                "area"=>$list->area,
-                "site_name"=>$list->site_name,
-                "sow"=>$list->sow,
-                "po_number"=>null,
-            );
-        }
-        
-        return $data;
-    }
 
     public function getMenus(){
 
