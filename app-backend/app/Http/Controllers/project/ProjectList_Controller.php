@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\projectModels\revenueModel;
 use App\Models\projectModels\afModel;
 use App\Models\projectModels\sitesModel;
+use App\Models\projectModels\batchProjectModel;
 
 
 class ProjectList_Controller extends BaseController
@@ -26,6 +27,7 @@ class ProjectList_Controller extends BaseController
         $this->revenueModel = new revenueModel;
         $this->afModel = new afModel;
         $this->sitesModel = new sitesModel;
+        $this->batchProjectModel = new batchProjectModel;
 
     }
 
@@ -33,6 +35,30 @@ class ProjectList_Controller extends BaseController
 
         $data = array();
 
+        $where = array(
+            array('active', 1),
+        );
+        $data = $this->batchProjectModel->get($where);
+
+        $data = array_values($data);
+
+        $key_values = array_column($data, 'po_date');
+        array_multisort($key_values, SORT_DESC, $data);
+        
+        $status = "200";
+        $message = "Ok.";
+        $list = $data;
+
+        $response = array(
+            "status"=>$status,
+            "message"=>$message,
+            "list"=>$list,
+        );
+
+        return response()->json($response);
+    }
+
+    function getProjectFrom_db_project (){
         $revenue = $this->revenueModel->list();
 
         $link = env('HOST_NAME').env('FRONTEND_PORT').env('APP_PROJECT');
@@ -72,19 +98,6 @@ class ProjectList_Controller extends BaseController
                 );
             }
         }
-
-        
-        $status = "200";
-        $message = "Ok.";
-        $list = $data;
-
-        $response = array(
-            "status"=>$status,
-            "message"=>$message,
-            "list"=>$list,
-        );
-
-        return response()->json($response);
     }
 
 }
