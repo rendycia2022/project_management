@@ -44,6 +44,35 @@ class ProjectList_Controller extends BaseController
 
         $key_values = array_column($data, 'po_date');
         array_multisort($key_values, SORT_DESC, $data);
+
+        $open = 0;
+        $close = 0;
+        for($s=0; $s<count($data); $s++){
+            $status = $data[$s]['status'];
+            $po_date = $data[$s]['po_date'];
+
+            $dateCreate = '';
+            if($status == 'Open'){
+                $open++;
+            }
+
+            if($status == 'Close'){
+                $close++;
+            }
+
+            // remarks
+            $code = $data[$s]['no_document'];
+            $remarks = $this->batchProjectModel->remarks($code);
+            $remarks_display = '';
+            if(count($remarks)>0){
+                foreach($remarks as $r){
+                    $remarks_display = $r->remarks;
+                }
+            }
+
+            $data[$s]['remarks'] = $remarks_display;
+            
+        }
         
         $status = "200";
         $message = "Ok.";
@@ -53,6 +82,10 @@ class ProjectList_Controller extends BaseController
             "status"=>$status,
             "message"=>$message,
             "list"=>$list,
+            "status"=>array(
+                "open"=>$open,
+                "close"=>$close,
+            ),
         );
 
         return response()->json($response);
@@ -98,6 +131,48 @@ class ProjectList_Controller extends BaseController
                 );
             }
         }
+    }
+
+    public function updateRemarks(Request $request){
+
+        $payload = $request->json()->all();
+        $code = $payload['no_document'];
+        $payload_remarks = $payload['remarks'];
+
+        $remarks = $this->batchProjectModel->remarks($code);
+        if(count($remarks)>0){
+            // update
+            $update = array(
+                "remarks"=>$payload_remarks,
+            );
+
+            DB::connection('db_project_management')
+            ->table('batch_remarks')
+            ->where('code', $code)
+            ->update(
+                $update
+            );
+        }else{
+            // create
+            $create = array(
+                "code"=>$code,
+                "remarks"=>$payload_remarks,
+            );
+    
+            DB::connection('db_project_management')
+            ->table('batch_remarks')
+            ->insert(
+                $create
+            );
+
+        }
+
+        $response = array(
+            "status"=>200,
+            "message"=>$payload,
+        );
+
+        return response()->json($response);
     }
 
 }

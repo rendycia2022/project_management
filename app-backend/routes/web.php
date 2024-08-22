@@ -33,9 +33,11 @@ $router->group(['prefix' => 'api/'], function () use ($router) {
     $router->group(['prefix' => 'project'], function () use ($router) {
         // chart 
         $router->get('/chart/revenue','project\ProjectChart_Controller@revenue');
+        $router->get('/chart/revenue/{year}','project\ProjectChart_Controller@revenueYear');
 
         // list
         $router->get('/list','project\ProjectList_Controller@show');
+        $router->post('/list/remarks','project\ProjectList_Controller@updateRemarks'); // remarks
 
         // history
         $router->get('/update/{day}/{all}','project\UpdateController@show');
