@@ -184,7 +184,6 @@ class ProjectChart_Controller extends BaseController
 
                 // status
                 $charts[$project]['dataRaw']['status']['total_po'] = 1;
-                
 
             }
 

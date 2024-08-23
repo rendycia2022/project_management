@@ -71,6 +71,25 @@ class ProjectList_Controller extends BaseController
             }
 
             $data[$s]['remarks'] = $remarks_display;
+
+            // af
+            $af_total = 0;
+            $where_af = array(
+                array('approval_items.purchase_order', $code),
+                array('approval_items.active', 1),
+                array('approval_header.active', 1),
+            );
+
+            $af_items = $this->afModel->approval_items($where_af);
+            if(count($af_items)>0){
+                foreach($af_items as $afi){
+                    $af_item_price = $afi->price;
+
+                    $af_total = $af_total + $af_item_price;
+                }
+            }
+
+            $data[$s]['indirect'] = $af_total;
             
         }
         

@@ -12,8 +12,10 @@ class afModel extends Model
 
         $query = DB::connection('db_af')
         ->table('approval_items')
+        ->join('approval_header','approval_header.id',"=","approval_items.document_id")
         ->where($where)
-        ->orderBy('date', 'ASC')
+        ->whereYear('approval_header.date', '>=' , 2024)
+        ->orderBy('approval_items.date', 'ASC')
         ->get();
         
         return $query;
