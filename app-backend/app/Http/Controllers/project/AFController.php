@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\projectModels\dbModel;
 use App\Models\projectModels\updateModel;
 use App\Models\projectModels\documentModel;
-
+use App\Models\projectModels\afModel;
 
 
 class AFController extends BaseController
@@ -26,7 +26,30 @@ class AFController extends BaseController
         $this->updateModel = new updateModel;
         $this->dbModel = new dbModel;
         $this->documentModel = new documentModel;
+        $this->afModel = new afModel;
 
+    }
+
+    public function showByPO(Request $request){
+
+        $no_document = $request->no_document;
+
+        $where_af = array(
+            array('approval_items.purchase_order', $no_document),
+            array('approval_items.active', 1),
+            array('approval_header.active', 1),
+        );
+
+        $af_items = $this->afModel->approval_items($where_af);
+        
+        $response = array(
+            "status"=>200,
+            "message"=>"Ok.",
+            "list"=>$af_items,
+            "backend_af"=>env('HOST_NAME').env('BACKEND_AF_PORT'),
+        );
+
+        return response()->json($response);
     }
 
     public function show(Request $request){
