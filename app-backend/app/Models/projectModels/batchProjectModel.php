@@ -44,6 +44,7 @@ class batchProjectModel extends Model
                     "cust_init"=>$cust_init,
                 );
 
+                $data[$no_document]['project'] = $project;
                 $data[$no_document]['po_date'] = $date;
                 $data[$no_document]['no_document'] = $no_document;
                 $data[$no_document]['status'] = $status;
