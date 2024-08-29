@@ -90,6 +90,18 @@ class ProjectList_Controller extends BaseController
             }
 
             $data[$s]['indirect'] = $af_total;
+
+            // document_po
+            $document_po = $this->renameForPoFile($code);
+            $file = null;
+
+            $path = base_path('public/document_po/'.$document_po.'.pdf');
+            if (file_exists($path)) {
+                $file = env('HOST_NAME').env('HOST_PORT')."/document_po/".$document_po.".pdf";
+            }
+
+            $data[$s]['document_po'] = $file;
+            
             
         }
         
@@ -192,6 +204,15 @@ class ProjectList_Controller extends BaseController
         );
 
         return response()->json($response);
+    }
+
+    function renameForPoFile($string){
+
+        $string = str_replace("PO/", "", $string);
+
+        $string = str_replace("/", "_", $string);
+
+        return $string;
     }
 
 }
