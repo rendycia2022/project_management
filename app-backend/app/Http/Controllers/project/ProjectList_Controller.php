@@ -14,6 +14,7 @@ use App\Models\projectModels\revenueModel;
 use App\Models\projectModels\afModel;
 use App\Models\projectModels\sitesModel;
 use App\Models\projectModels\batchProjectModel;
+use App\Models\projectModels\getProjectModel;
 
 
 class ProjectList_Controller extends BaseController
@@ -28,6 +29,7 @@ class ProjectList_Controller extends BaseController
         $this->afModel = new afModel;
         $this->sitesModel = new sitesModel;
         $this->batchProjectModel = new batchProjectModel;
+        $this->getProjectModel = new getProjectModel;
 
     }
 
@@ -101,6 +103,23 @@ class ProjectList_Controller extends BaseController
             }
 
             $data[$s]['document_po'] = $file;
+
+            // pps
+            $where_project = array(
+                array('active', 1),
+                array('document', $code),
+            );
+            $project = $this->getProjectModel->getByPONumber($where_project);
+            if(count($project)>0){
+                foreach($project as $p){
+                    $project_code = $p->id;
+                    $project_link = env('HOST_NAME').env('FRONTEND_PORT')."/project/summary/".$project_code."/detail";
+                }
+
+                $data[$s]['project_link'] = $project_link;
+            }
+
+            
             
             
         }
@@ -123,6 +142,7 @@ class ProjectList_Controller extends BaseController
     }
 
     function getProjectFrom_db_project (){
+        // not function yet
         $revenue = $this->revenueModel->list();
 
         $link = env('HOST_NAME').env('FRONTEND_PORT').env('APP_PROJECT');
