@@ -17,4 +17,14 @@ class getProjectModel extends Model
         
         return $query;
     }
+
+    public function show($where){
+
+        $query = DB::connection('db_project')
+        ->table('new_project')
+        ->where($where)
+        ->get();
+        
+        return $query;
+    }
 }

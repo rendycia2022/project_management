@@ -105,23 +105,33 @@ class ProjectList_Controller extends BaseController
             $data[$s]['document_po'] = $file;
 
             // pps
-            $where_project = array(
+            $where_new_project = array(
                 array('active', 1),
-                array('document', $code),
+                array('po_number', $code),
             );
-            $project = $this->getProjectModel->getByPONumber($where_project);
-            if(count($project)>0){
-                foreach($project as $p){
-                    $project_code = $p->id;
-                    $project_link = env('HOST_NAME').env('FRONTEND_PORT')."/project/summary/".$project_code."/detail";
+            $new_project = $this->getProjectModel->show($where_new_project);
+            if(count($new_project)>0){
+                foreach($new_project as $np){
+                    $project_code = $np->code;
+                    $project_link = env('HOST_NAME').env('FRONTEND_PORT')."/project/new/dashboard/".$project_code;
                 }
 
                 $data[$s]['project_link'] = $project_link;
+            }else{
+                $where_project = array(
+                    array('active', 1),
+                    array('document', $code),
+                );
+                $project = $this->getProjectModel->getByPONumber($where_project);
+                if(count($project)>0){
+                    foreach($project as $p){
+                        $project_code = $p->id;
+                        $project_link = env('HOST_NAME').env('FRONTEND_PORT')."/project/summary/".$project_code."/detail";
+                    }
+    
+                    $data[$s]['project_link'] = $project_link;
+                }
             }
-
-            
-            
-            
         }
         
         $status = "200";
