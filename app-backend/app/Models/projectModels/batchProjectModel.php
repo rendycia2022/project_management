@@ -7,6 +7,32 @@ use Illuminate\Support\Facades\DB;
 
 class batchProjectModel extends Model
 {
+
+    public function invoice($code){
+        $query = DB::connection('db_project_management')
+        ->table('batch')
+        ->where('po_number', $code)
+        ->where('active', 1)
+        ->orderBy('date', 'ASC')
+        ->get();
+
+        $total_revenue = 0;
+        if(count($query)>0){
+            foreach($query as $list){
+                $revenue = $list->revenue;
+
+                $total_revenue = $total_revenue + $revenue;
+            }
+        }
+
+        $response = array(
+            "total"=>$total_revenue,
+        );
+
+        return $response;
+
+    }
+
     public function remarks($code){
         $query = DB::connection('db_project_management')
         ->table('batch_remarks')

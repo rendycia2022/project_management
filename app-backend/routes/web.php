@@ -32,6 +32,15 @@ $router->group(['prefix' => 'api/'], function () use ($router) {
 
     $router->group(['prefix' => 'project'], function () use ($router) {
 
+        // new start
+        $router->group(['prefix' => 'new'], function () use ($router) {
+            $router->get('/list','project\ListController@show');
+            $router->post('/list/remarks','project\ListController@updateRemarks'); // remarks
+
+            $router->get('/chart','project\ChartController@show');
+        });
+        // new end
+
         // af
         $router->get('/af/po','project\AFController@showByPO');
 
@@ -50,6 +59,13 @@ $router->group(['prefix' => 'api/'], function () use ($router) {
         // sites
         $router->get('/sites/menus','project\SitesController@getMenus');
     });
+
+    $router->group(['prefix' => 'public'], function () use ($router) {
+
+        // file
+        $router->get('/file/po','public\FilesController@get_po');
+    });
+
 });
 
 ?>

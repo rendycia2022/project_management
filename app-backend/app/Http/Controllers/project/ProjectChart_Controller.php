@@ -12,6 +12,9 @@ use Illuminate\Support\Facades\Hash;
 // models
 use App\Models\projectModels\batchProjectModel;
 use App\Models\projectModels\styleModels;
+use App\Models\projectModels\getProjectModel;
+use App\Models\projectModels\directModel;
+use App\Models\projectModels\afModel;
 
 
 class ProjectChart_Controller extends BaseController
@@ -24,6 +27,9 @@ class ProjectChart_Controller extends BaseController
         // models
         $this->batchProjectModel = new batchProjectModel;
         $this->styleModels = new styleModels;
+        $this->getProjectModel = new getProjectModel;
+        $this->directModel = new directModel;
+        $this->afModel = new afModel;
 
     }
 
@@ -108,7 +114,7 @@ class ProjectChart_Controller extends BaseController
             $charts[$c]['dataset'] = [$dataset['revenue'], $balance];
             
 
-            $progress = round(($dataset['revenue'] / $dataset['po_value']) * 100);
+            $progress = round(($balance / $dataset['po_value']) * 100);
             if($dataset['revenue'] >= $dataset['po_value']){
                 $progress = 100;
             }
@@ -119,7 +125,7 @@ class ProjectChart_Controller extends BaseController
             $colors = $this->styleModels->colors();
 
             $charts[$c]['color'] = $colors[$c];
-            $charts[$c]['datasetColor'] = [$colors[$c], '#cccccc'];
+            $charts[$c]['datasetColor'] = ['#cccccc', $colors[$c]];
         }
 
         $response = $charts;
@@ -148,7 +154,7 @@ class ProjectChart_Controller extends BaseController
             $charts[$project]['title'] = $project;
 
             // title
-            $charts[$project]['labels'] = ['Revenue', 'Sisa Nilai PO'];
+            $charts[$project]['labels'] = ['Invoice', 'Sisa Nilai PO'];
 
             // dataset
             if(isset($charts[$project]['dataRaw'])){
@@ -203,7 +209,7 @@ class ProjectChart_Controller extends BaseController
             $charts[$c]['dataset'] = [$dataset['revenue'], $balance];
             
 
-            $progress = round(($dataset['revenue'] / $dataset['po_value']) * 100);
+            $progress = round(($balance / $dataset['po_value']) * 100);
             if($dataset['revenue'] >= $dataset['po_value']){
                 $progress = 100;
             }
@@ -214,7 +220,8 @@ class ProjectChart_Controller extends BaseController
             $colors = $this->styleModels->colors();
 
             $charts[$c]['color'] = $colors[$c];
-            $charts[$c]['datasetColor'] = [$colors[$c], '#cccccc'];
+            $charts[$c]['datasetColor'] = ['#cccccc', $colors[$c]];
+
         }
 
         $response = $charts;

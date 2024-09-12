@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 
 use App\Models\projectModels\getProjectModel;
 
-class revenueModel extends Model
+class directModel extends Model
 {
 
     public function __construct(){
@@ -17,11 +17,9 @@ class revenueModel extends Model
 
     }
 
-    public function revenueTotal($po_number){
-
-        $po_number = trim($po_number);
-
+    public function directTotal($po_number){
         $total = 0;
+        $po_number = trim($po_number);
 
         $where_project = array(
             array('po_number', $po_number),
@@ -39,23 +37,23 @@ class revenueModel extends Model
             );
     
             $items = $this->show($where);
-    
-            
+            $subtotal = 0;
             if(count($items)>0){
                 foreach($items as $item){
                     $price = $item->price;
                     $qty = $item->qty;
     
-                    $subtotal = $price * $qty;
+                    $item_total = $price * $qty;
     
-                    $total = $total + $subtotal;
+                    $subtotal = $subtotal + $item_total;
                 }
+    
+                $total = $total + $subtotal;
             }
-
         }
 
         $response = array(
-            "total"=>$total,
+            "total"=>$total
         );
 
         return $response;
@@ -63,33 +61,10 @@ class revenueModel extends Model
 
     public function show($where){
         $data = DB::connection('db_project')
-        ->table("new_project_revenue")
+        ->table("new_project_direct")
         ->where($where)
-        ->orderBy('created_at', 'ASC')
         ->get();
 
         return $data;
     }
-
-    public function list(){
-
-        $where = array(
-            array('active', 1),
-            array('created_by', '!=', '8ddcfaf8-865e-46b9-9421-fc6d8b933be2'),
-            array('no_document', '!=', null),
-            array('item', '!=', null),
-            array('qty', '!=', null),
-            array('price', '!=', null),
-        );
-
-        $query = DB::connection('db_project')
-        ->table('project_revenue')
-        ->where($where)
-        ->orderBy('date', 'DESC')
-        ->get();
-        
-        return $query;
-    }
-
-
 }

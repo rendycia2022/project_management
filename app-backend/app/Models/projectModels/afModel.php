@@ -20,4 +20,29 @@ class afModel extends Model
         
         return $query;
     }
+
+    public function indirectTotal($po_number){
+
+        $af_total = 0;
+        $where_af = array(
+            array('approval_items.purchase_order', $po_number),
+            array('approval_items.active', 1),
+            array('approval_header.active', 1),
+        );
+
+        $af_items = $this->approval_items($where_af);
+        if(count($af_items)>0){
+            foreach($af_items as $afi){
+                $af_item_price = $afi->price;
+
+                $af_total = $af_total + $af_item_price;
+            }
+        }
+
+        $response = array(
+            "total"=>$af_total,
+        );
+        
+        return $response;
+    }
 }

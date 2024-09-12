@@ -15,6 +15,7 @@ use App\Models\projectModels\afModel;
 use App\Models\projectModels\sitesModel;
 use App\Models\projectModels\batchProjectModel;
 use App\Models\projectModels\getProjectModel;
+use App\Models\projectModels\directModel;
 
 
 class ProjectList_Controller extends BaseController
@@ -30,6 +31,7 @@ class ProjectList_Controller extends BaseController
         $this->sitesModel = new sitesModel;
         $this->batchProjectModel = new batchProjectModel;
         $this->getProjectModel = new getProjectModel;
+        $this->directModel = new directModel;
 
     }
 
@@ -94,12 +96,12 @@ class ProjectList_Controller extends BaseController
             $data[$s]['indirect'] = $af_total;
 
             // document_po
-            $document_po = $this->renameForPoFile($code);
+            $document_po = $this->getProjectModel->renameForPoFile($code);
             $file = null;
 
             $path = base_path('public/document_po/'.$document_po.'.pdf');
             if (file_exists($path)) {
-                $file = env('HOST_NAME').env('HOST_PORT')."/document_po/".$document_po.".pdf";
+                $file = env('HOST_NAME').env('HOST_PORT')."/document_po/".$document_po.".pdf"; 
             }
 
             $data[$s]['document_po'] = $file;
@@ -132,6 +134,15 @@ class ProjectList_Controller extends BaseController
                     $data[$s]['project_link'] = $project_link;
                 }
             }
+
+            // direct cost
+            $direct = $this->directModel->directTotal($code);
+
+            $data[$s]['direct'] = array(
+                "total"=>$direct['total'],
+            );
+
+
         }
         
         $status = "200";
@@ -234,15 +245,6 @@ class ProjectList_Controller extends BaseController
         );
 
         return response()->json($response);
-    }
-
-    function renameForPoFile($string){
-
-        $string = str_replace("PO/", "", $string);
-
-        $string = str_replace("/", "_", $string);
-
-        return $string;
     }
 
 }

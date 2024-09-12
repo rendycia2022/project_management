@@ -27,4 +27,13 @@ class getProjectModel extends Model
         
         return $query;
     }
+
+    function renameForPoFile($string){
+
+        $string = str_replace("PO/", "", $string);
+
+        $string = str_replace("/", "_", $string);
+
+        return $string;
+    }
 }
