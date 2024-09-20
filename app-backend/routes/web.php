@@ -35,9 +35,16 @@ $router->group(['prefix' => 'api/'], function () use ($router) {
         // new start
         $router->group(['prefix' => 'new'], function () use ($router) {
             $router->get('/list','project\ListController@show');
+            $router->get('/list/bypo','project\ListController@showByPo');
             $router->post('/list/remarks','project\ListController@updateRemarks'); // remarks
 
             $router->get('/chart','project\ChartController@show');
+
+            $router->get('/bast/bypo','project\BASTController@showByPo');
+            $router->post('/bast/{user_id}','project\BASTController@store');
+            $router->get('/bast/backend/target','project\BASTController@backend');
+            $router->get('/bast/download/template','project\BASTController@download');
+            
         });
         // new end
 

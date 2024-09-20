@@ -53,7 +53,7 @@ class batchProjectModel extends Model
         ->get();
 
         if(count($query)>0){
-            foreach($query as $list){
+            foreach($query as $list){ 
                 
                 $no_document = $list->po_number;
                 $project = $list->project;

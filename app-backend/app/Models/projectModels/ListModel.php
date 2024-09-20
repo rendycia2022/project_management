@@ -11,6 +11,7 @@ use App\Models\projectModels\directModel;
 use App\Models\projectModels\revenueModel;
 use App\Models\projectModels\getProjectModel;
 use App\Models\projectModels\batchProjectModel;
+use App\Models\projectModels\bastModels;
 
 class ListModel extends Model
 {
@@ -23,6 +24,7 @@ class ListModel extends Model
         $this->revenueModel = new revenueModel;
         $this->getProjectModel = new getProjectModel;
         $this->batchProjectModel = new batchProjectModel;
+        $this->bastModels = new bastModels;
 
     }
 
@@ -53,6 +55,16 @@ class ListModel extends Model
                 // pps link
                 $project_link = env('HOST_NAME').env('FRONTEND_PORT')."/project/new/dashboard/".$code;
 
+                $revenue = $this->revenueModel->revenueTotal($po_number); 
+                $invoice = $this->batchProjectModel->invoice($po_number);
+
+                // get status
+                $status = "Open";
+                if($invoice >= $revenue){
+                    $status = "Close";
+                }
+
+                // collect list
                 $list[] = array(
                     "code"=>$item->code,
                     "po_number"=>$item->po_number,
@@ -67,11 +79,13 @@ class ListModel extends Model
                     ),
                     "direct"=>$this->directModel->directTotal($po_number),
                     "indirect"=>$this->afModel->indirectTotal($po_number),
-                    "revenue"=>$this->revenueModel->revenueTotal($po_number),
+                    "revenue"=>$revenue,
                     "remarks"=>$this->remarks($po_number),
                     "file_document"=>$file,
                     "project_link"=>$project_link,
-                    "invoice"=>$this->batchProjectModel->invoice($po_number),
+                    "invoice"=>$invoice,
+                    "bast"=>$this->bastModels->bastTotal($po_number),
+                    "status"=>$status,
                 );
             }
         }
@@ -95,5 +109,15 @@ class ListModel extends Model
         }
 
         return $remarks;
+    }
+
+    function batch($where){
+        $query = DB::connection('db_project_management')
+        ->table('batch')
+        ->where($where)
+        ->orderBy('date', 'ASC')
+        ->get();
+
+        return $query;
     }
 }

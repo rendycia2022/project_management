@@ -28,15 +28,49 @@ class ListController extends BaseController
 
     public function show(Request $request){
 
+        $year = $request['year'];
+        $statusRequest = $request['status'];
+
         $where = array(
             array('active', 1),
         );
         $list = $this->ListModel->getData($where);
 
+        $raw = array();
+        $count_list = count($list);
+        if($count_list > 0){
+            for($i=0; $i<$count_list; $i++){
+                $date_create = date_create($list[$i]['date']);
+                $date_formated = date_format($date_create,"Y");
+
+                if($year == "All"){
+                    $raw[] = $list[$i];
+                }else{
+                    if($year == $date_formated){
+                        $raw[] = $list[$i];
+                    }
+                }
+            }
+
+            // filtering status
+            if($statusRequest != "All"){
+                $count_raw = count($raw);
+                $filteredStatus = array();
+                for($j=0; $j<$count_raw; $j++){
+                    $rawStatus = $raw[$j]['status'];
+                    if($rawStatus == $statusRequest){
+                        $filteredStatus[] = $raw[$j];
+                    }
+                }
+
+                $raw = $filteredStatus;
+            }
+        }
+
         $response = array(
             "status"=>200,
             "message"=>"Ok.",
-            "list"=>$list,
+            "list"=>$raw,
         );
 
         return response()->json($response);

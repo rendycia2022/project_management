@@ -31,6 +31,7 @@ class ChartController extends BaseController
     public function show(Request $request){
 
         $year = $request['year'];
+        $statusRequest = $request['status'];
 
         $where = array(
             array('active', 1),
@@ -49,7 +50,7 @@ class ChartController extends BaseController
 
                 $optionYears[$date_formated] = $date_formated;
 
-                if($year == "false"){
+                if($year == "All"){
                     $raw[] = $list[$i];
                 }else{
                     if($year == $date_formated){
@@ -59,9 +60,23 @@ class ChartController extends BaseController
             }
         }
 
+        // filtering status
+        if($statusRequest != "All"){
+            $count_raw = count($raw);
+            $filteredStatus = array();
+            for($j=0; $j<$count_raw; $j++){
+                $rawStatus = $raw[$j]['status'];
+                if($rawStatus == $statusRequest){
+                    $filteredStatus[] = $raw[$j];
+                }
+            }
+
+            $raw = $filteredStatus;
+        }
+
         // data chart builder
         // define data
-        $chart = array();
+        $charts = array();
         $count_raw = count($raw);
         if($count_raw > 0){
             for($j=0; $j<$count_raw; $j++){
@@ -100,41 +115,44 @@ class ChartController extends BaseController
                     $charts[$project_code]['raw']['direct'] = $direct;
                 }
             }
-        }
 
-        // build chart
-        $charts = array_values($charts);
+            // build chart
+            $charts = array_values($charts);
 
-        for($c=0; $c<count($charts); $c++){
-            $dataset =  $charts[$c]['raw'];
+            for($c=0; $c<count($charts); $c++){
+                $dataset =  $charts[$c]['raw'];
 
-            $balance = $dataset['revenue'] - $dataset['invoice'];
-            $charts[$c]['dataset'] = [$dataset['invoice'], $balance];
+                $balance = $dataset['revenue'] - $dataset['invoice'];
+                $charts[$c]['dataset'] = [$dataset['invoice'], $balance];
 
-            // legend
-            $charts[$c]['labels'] = ["Invoice", "Expected Revenue's left"];
-            
-            $progress = round(($balance / $dataset['revenue']) * 100);
-            if($dataset['invoice'] >= $dataset['revenue']){
-                $progress = 100;
+                // legend
+                $charts[$c]['labels'] = ["Invoice", "Expected Revenue's left"];
+                
+                $progress = round(($balance / $dataset['revenue']) * 100);
+                if($dataset['invoice'] >= $dataset['revenue']){
+                    $progress = 100;
+                }
+
+                $charts[$c]['progress'] = $progress;
+
+                // generating color
+                $colors = $this->styleModels->project_color($charts[$c]['title']);
+
+                $charts[$c]['color'] = $colors;
+                $charts[$c]['datasetColor'] = ['#cccccc', $colors];
             }
 
-            $charts[$c]['progress'] = $progress;
-
-            // generating color
-            $colors = $this->styleModels->project_color($charts[$c]['title']);
-
-            $charts[$c]['color'] = $colors;
-            $charts[$c]['datasetColor'] = ['#cccccc', $colors];
+            $key_values = array_column($charts, 'title');
+            array_multisort($key_values, SORT_DESC, $charts);
         }
-
-        $key_values = array_column($charts, 'title');
-        array_multisort($key_values, SORT_DESC, $charts);
         
         // reindexing
-        $optionYears = array_values($optionYears);
-        rsort($optionYears);
-
+        if(count($optionYears)>0){
+            $optionYears = array_values($optionYears);
+            rsort($optionYears);
+        }
+        
+        // send to front
         $response = array(
             "status"=>200,
             "message"=>"Ok.",
