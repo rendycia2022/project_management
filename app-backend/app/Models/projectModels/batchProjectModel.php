@@ -21,7 +21,7 @@ class batchProjectModel extends Model
             foreach($query as $list){
                 $revenue = $list->revenue;
 
-                $total_revenue = $total_revenue + $revenue;
+                $total_revenue = $total_revenue + $revenue; 
             }
         }
 

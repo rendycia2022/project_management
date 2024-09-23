@@ -60,7 +60,7 @@ class ListModel extends Model
 
                 // get status
                 $status = "Open";
-                if($invoice >= $revenue){
+                if($invoice['total'] >= $revenue['total']){
                     $status = "Close";
                 }
 

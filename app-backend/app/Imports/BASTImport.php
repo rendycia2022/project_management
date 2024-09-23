@@ -57,44 +57,42 @@ class BASTImport implements ToCollection, WithStartRow, WithChunkReading, WithMu
                 $qty = $row[6];
                 $invoice_number = trim($row[7]);
 
-                $wherePayment = array(
+                $whereList = array(
                     array('active', 1),
-                    array('label', $paymentLabel),
+                    array('po_number', $po_number),
                 );
-                $payment = $this->bastModels->payment($wherePayment);
-                if(count($payment)>0){
-                    // insert
+                $list = $this->ListModel->getData($whereList);
+                if(count($list)>0){
 
-                    DB::table('bast')
-                    ->insert(
-                        [
-                            "id"=>$newId,
-                            "created_at"=>$timestamp,
-                            "updated_at"=>$timestamp,
-                            "created_by"=>$user_id,
-                            "updated_by"=>$user_id,
-
-                            "po_number"=>$po_number,
-                            "date"=>$date,
-                            "price"=>$price,
-                            "payment"=>$paymentLabel,
-                            "term"=>$term,
-                            "qty"=>$qty,
-                            "invoice_number"=>$invoice_number,
-                        ]
+                    $wherePayment = array(
+                        array('active', 1),
+                        array('label', $paymentLabel),
                     );
+                    $payment = $this->bastModels->payment($wherePayment);
+                    if(count($payment)>0){
+                        // insert
+    
+                        DB::table('bast')
+                        ->insert(
+                            [
+                                "id"=>$newId,
+                                "created_at"=>$timestamp,
+                                "updated_at"=>$timestamp,
+                                "created_by"=>$user_id,
+                                "updated_by"=>$user_id,
+    
+                                "po_number"=>$po_number,
+                                "date"=>$date,
+                                "price"=>$price,
+                                "payment"=>$paymentLabel,
+                                "term"=>$term,
+                                "qty"=>$qty,
+                                "invoice_number"=>$invoice_number,
+                            ]
+                        );
+                    }
+                    
                 }
-
-                // $whereList = array(
-                //     array('active', 1),
-                //     array('po_number', $po_number),
-                // );
-                // $list = $this->ListModel->getData($whereList);
-                // if(count($list)>0){
-
-                    
-                    
-                // }
                  
             }
         }

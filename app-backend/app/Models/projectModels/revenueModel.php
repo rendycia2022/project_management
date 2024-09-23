@@ -22,6 +22,7 @@ class revenueModel extends Model
         $po_number = trim($po_number);
 
         $total = 0;
+        $totalQty = 0;
 
         $where_project = array(
             array('po_number', $po_number),
@@ -49,6 +50,7 @@ class revenueModel extends Model
                     $subtotal = $price * $qty;
     
                     $total = $total + $subtotal; 
+                    $totalQty = $totalQty + $qty;
                 }
             }
 
@@ -56,6 +58,7 @@ class revenueModel extends Model
 
         $response = array(
             "total"=>$total,
+            "totalQty"=>$totalQty,
         );
 
         return $response;

@@ -89,6 +89,7 @@ class ChartController extends BaseController
                 $invoice = $raw[$j]['invoice']['total'];
                 $indirect = $raw[$j]['indirect']['total'];
                 $direct = $raw[$j]['direct']['total'];
+                $bast = $raw[$j]['bast']['total'];
                 if(isset($charts[$project_code]['raw'])){
                     // expected revenue
                     $charts[$project_code]['raw']['revenue'] = $charts[$project_code]['raw']['revenue'] + $revenue;
@@ -101,6 +102,9 @@ class ChartController extends BaseController
 
                     // direct
                     $charts[$project_code]['raw']['direct'] = $charts[$project_code]['raw']['direct'] + $direct;
+
+                    // bast
+                    $charts[$project_code]['raw']['bast'] = $charts[$project_code]['raw']['bast'] + $bast;
                 }else{
                     // expected revenue
                     $charts[$project_code]['raw']['revenue'] = $revenue;
@@ -113,6 +117,9 @@ class ChartController extends BaseController
 
                     // direct
                     $charts[$project_code]['raw']['direct'] = $direct;
+
+                    // bast
+                    $charts[$project_code]['raw']['bast'] = $bast;
                 }
             }
 
@@ -122,7 +129,13 @@ class ChartController extends BaseController
             for($c=0; $c<count($charts); $c++){
                 $dataset =  $charts[$c]['raw'];
 
+                $chart_title = $charts[$c]['title'];
+
                 $balance = $dataset['revenue'] - $dataset['invoice'];
+                if($chart_title == "SLB_IOH"){
+                    $balance = $dataset['revenue'] - $dataset['bast'];
+                }
+
                 $charts[$c]['dataset'] = [$dataset['invoice'], $balance];
 
                 // legend

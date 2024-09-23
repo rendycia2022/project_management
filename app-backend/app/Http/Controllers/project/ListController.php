@@ -26,6 +26,25 @@ class ListController extends BaseController
 
     }
 
+    public function showByPo(Request $request){
+
+        $po_number = $request['code'];
+
+        $where = array(
+            array('active', 1),
+            array('po_number', $po_number),
+        );
+        $list = $this->ListModel->getData($where);
+
+        $response = array(
+            "status"=>200,
+            "message"=>"Ok.",
+            "list"=>$list[0],
+        );
+
+        return response()->json($response);
+    }
+
     public function show(Request $request){
 
         $year = $request['year'];
