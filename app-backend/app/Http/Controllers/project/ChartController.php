@@ -131,18 +131,27 @@ class ChartController extends BaseController
 
                 $chart_title = $charts[$c]['title'];
 
-                $balance = $dataset['revenue'] - $dataset['invoice'];
+                $invoice = $dataset['invoice'];
+                $balance = $dataset['revenue'] - $invoice;
+                $balance_label = "Expected Revenue's left";
                 if($chart_title == "SLB_IOH"){
-                    $balance = $dataset['revenue'] - $dataset['bast'];
+                    $invoice = $dataset['bast'];
+                    $balance = $dataset['revenue'] - $invoice;
+                }
+                if($balance < 0){
+                    $balance = $balance*-1;
+                    $invoice = $invoice - $balance;
+
+                    $balance_label = "Extra Revenue";
                 }
 
-                $charts[$c]['dataset'] = [$dataset['invoice'], $balance];
+                $charts[$c]['dataset'] = [$invoice, $balance];
 
                 // legend
-                $charts[$c]['labels'] = ["Invoice", "Expected Revenue's left"];
+                $charts[$c]['labels'] = ["Invoice", $balance_label];
                 
                 $progress = round(($balance / $dataset['revenue']) * 100);
-                if($dataset['invoice'] >= $dataset['revenue']){
+                if($invoice >= $dataset['revenue']){
                     $progress = 100;
                 }
 
