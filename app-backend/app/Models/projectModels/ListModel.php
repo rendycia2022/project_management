@@ -64,6 +64,14 @@ class ListModel extends Model
                     $status = "Close";
                 }
 
+                $project = $item->project;
+                if($project == "SLB_IOH"){
+                    $bast = $this->bastModels->bastTotal($po_number);
+                    if($bast['total'] >= $revenue['total']){
+                        $status = "Close";
+                    }
+                }
+
                 // collect list
                 $list[] = array(
                     "code"=>$item->code,
@@ -84,7 +92,7 @@ class ListModel extends Model
                     "file_document"=>$file,
                     "project_link"=>$project_link,
                     "invoice"=>$invoice,
-                    "bast"=>$this->bastModels->bastTotal($po_number),
+                    "bast"=>$bast,
                     "status"=>$status,
                 );
             }
