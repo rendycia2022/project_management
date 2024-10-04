@@ -65,8 +65,8 @@ class ListModel extends Model
                 }
 
                 $project = $item->project;
+                $bast = $this->bastModels->bastTotal($po_number);
                 if($project == "SLB_IOH"){
-                    $bast = $this->bastModels->bastTotal($po_number);
                     if($bast['total'] >= $revenue['total']){
                         $status = "Close";
                     }
