@@ -20,12 +20,12 @@ class dbModel extends Model
             'connection'=>'db_isat',
             'icon'=>'pi pi-fw pi-bookmark',
         );
-        $data[2] = array(
-            'label'=>'Approval Form',
-            'port'=>'8022',
-            'connection'=>'db_af',
-            'icon'=>'pi pi-fw pi-bookmark',
-        );
+        // $data[2] = array(
+        //     'label'=>'Approval Form',
+        //     'port'=>'8022',
+        //     'connection'=>'db_af',
+        //     'icon'=>'pi pi-fw pi-bookmark',
+        // );
 
         return $data;
     }
