@@ -131,13 +131,13 @@ class ChartController extends BaseController
 
                 $chart_title = $charts[$c]['title'];
 
-                $invoice = $dataset['invoice'];
+                $invoice = $dataset['bast'];
                 $balance = $dataset['revenue'] - $invoice;
                 $balance_label = "Expected Revenue's left";
-                if($chart_title == "SLB_IOH"){
-                    $invoice = $dataset['bast'];
-                    $balance = $dataset['revenue'] - $invoice;
-                }
+                // if($chart_title == "SLB_IOH"){
+                //     $invoice = $dataset['bast'];
+                //     $balance = $dataset['revenue'] - $invoice;
+                // }
                 if($balance < 0){
                     $balance = $balance*-1;
                     $invoice = $invoice - $balance;

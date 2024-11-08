@@ -57,20 +57,21 @@ class ListModel extends Model
 
                 $revenue = $this->revenueModel->revenueTotal($po_number); 
                 $invoice = $this->batchProjectModel->invoice($po_number);
+                $bast = $this->bastModels->bastTotal($po_number);
 
                 // get status
                 $status = "Open";
-                if($invoice['total'] >= $revenue['total']){
+                if($bast['total'] >= $revenue['total']){
                     $status = "Close";
                 }
 
-                $project = $item->project;
-                $bast = $this->bastModels->bastTotal($po_number);
-                if($project == "SLB_IOH"){
-                    if($bast['total'] >= $revenue['total']){
-                        $status = "Close";
-                    }
-                }
+                // $project = $item->project;
+                // $bast = $this->bastModels->bastTotal($po_number);
+                // if($project == "SLB_IOH"){
+                //     if($bast['total'] >= $revenue['total']){
+                //         $status = "Close";
+                //     }
+                // }
 
                 // collect list
                 $list[] = array(
