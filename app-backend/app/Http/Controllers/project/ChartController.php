@@ -148,7 +148,7 @@ class ChartController extends BaseController
                 $charts[$c]['dataset'] = [$invoice, $balance];
 
                 // legend
-                $charts[$c]['labels'] = ["Invoice", $balance_label];
+                $charts[$c]['labels'] = ["BAST", $balance_label];
                 
                 $progress = round(($balance / $dataset['revenue']) * 100);
                 if($invoice >= $dataset['revenue']){
