@@ -187,6 +187,39 @@ class BASTController extends BaseController
         
     }
 
+    public function destroy(Request $request){
+
+        $data = $request['data'];
+        $timestamp = gmdate('Y-m-d H:i:s', time()+(60*60*7));
+        $user_id = $request->input('user_id');
+
+        for($i=0; $i<count($data); $i++){
+            $id = $data[$i]['id'];
+
+            $update = array(
+                "active"=>0,
+                "updated_at"=>$timestamp,
+                "updated_by"=>$user_id,
+            );
+
+            DB::connection('db_project_management')
+            ->table('bast')
+            ->where('id', $id)
+            ->update(
+                $update
+            );
+        }
+
+        $message = "Success";
+
+        $response = array(
+            "status"=>200,
+            "message"=>$message,
+        );
+      
+        return response()->json($response); 
+    }
+
 }
 
 ?>

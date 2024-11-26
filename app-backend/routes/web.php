@@ -44,6 +44,7 @@ $router->group(['prefix' => 'api/'], function () use ($router) {
             $router->post('/bast/{user_id}','project\BASTController@store');
             $router->get('/bast/backend/target','project\BASTController@backend');
             $router->get('/bast/download/template','project\BASTController@download');
+            $router->delete('/bast','project\BASTController@destroy');
             
         });
         // new end
