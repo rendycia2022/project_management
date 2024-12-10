@@ -10,10 +10,9 @@ class batchProjectModel extends Model
 
     public function invoice($code){
         $query = DB::connection('db_project_management')
-        ->table('batch')
+        ->table('new_batch')
         ->where('po_number', $code)
         ->where('active', 1)
-        ->orderBy('date', 'ASC')
         ->get();
 
         $total_revenue = 0;
@@ -27,6 +26,30 @@ class batchProjectModel extends Model
 
         $response = array(
             "total"=>$total_revenue,
+        );
+
+        return $response;
+
+    }
+
+    public function cost($code){
+        $query = DB::connection('db_project_management')
+        ->table('new_batch')
+        ->where('po_number', $code)
+        ->where('active', 1)
+        ->get();
+
+        $total = 0;
+        if(count($query)>0){
+            foreach($query as $list){
+                $sub = $list->cost;
+
+                $total = $total + $sub; 
+            }
+        }
+
+        $response = array(
+            "total"=>$total,
         );
 
         return $response;

@@ -49,6 +49,7 @@ class ListController extends BaseController
 
         $year = $request['year'];
         $statusRequest = $request['status'];
+        $projectRequest = $request['project'];
 
         $where = array(
             array('active', 1),
@@ -69,6 +70,10 @@ class ListController extends BaseController
                         $raw[] = $list[$i];
                     }
                 }
+
+                // project fillter list
+                $projectCode = $list[$i]['project']['code'];
+                $optionProjects[$projectCode] = $projectCode;
             }
 
             // filtering status
@@ -83,6 +88,20 @@ class ListController extends BaseController
                 }
 
                 $raw = $filteredStatus;
+            }
+
+            // filltering project
+            if($projectRequest != "All"){
+                $count_raw = count($raw);
+                $fillteredProject = array();
+                for($j=0; $j<$count_raw; $j++){
+                    $rawProject = $raw[$j]['project']['code'];
+                    if($rawProject == $projectRequest){
+                        $fillteredProject[] = $raw[$j];
+                    }
+                }
+
+                $raw = $fillteredProject;
             }
         }
 

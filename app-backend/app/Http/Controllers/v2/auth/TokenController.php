@@ -28,31 +28,85 @@ class TokenController extends BaseController
         $this->authModel = new authModel;
     }
 
-    public function get(Request $request, $token){
+    public function getLoginProject(Request $request){
         
-        $status = "401";
-        $message = "Unauthorized.";
-        $response = '';
+        //define data
+        $user_id = $request->input('user_id');
+        $token = $request->input('token');
+        
+        $query = DB::connection('db_hr')->table('login')
+        ->select(
+            'login.user_id',
+            'login.token',
+            'login.created_at',
+        )
+        ->where('login.user_id',$user_id)
+        ->where('login.token',$token)
+        ->get();
 
-        $conditions_auth = array(
-            array('auth.token', $token),
-            array('auth.active', 1),
-        );
-        $auth = $this->authModel->get($conditions_auth);
-
-        if(count($auth)>0){
-            $status = "200";
-            $message = "OK.";
-            $response = $token;
+        $user = array();
+        if($query){
+            $status = 200;
+            $message = "Success";
+            $user = array(
+                'username'=>'admin@mail.com',
+                'password'=>'password',
+            );
+            
+        }else{
+            $status = 401;
+            $message = "Forbidden";
         }
-
+        
         $response = array(
             "status"=>$status,
             "message"=>$message,
-            "response"=>$response,
+            "user"=>$user,
         );
 
         return response()->json($response);
+    }
+
+    function get(Request $request){ 
+
+        //define data
+        $user_id = $request->input('user_id');
+        $token = $request->input('token');
+        
+        $query = DB::connection('db_hr')->table('login')
+        ->select(
+            'login.user_id',
+            'login.token',
+            'login.created_at',
+        )
+        ->where('login.user_id',$user_id)
+        ->where('login.token',$token)
+        ->get();
+
+        $data_login = array();
+        if($query){
+            $status = 200;
+            $message = "Success";
+            foreach($query as $list){
+                $data_login = array(
+                    "user_id"=>$list->user_id,
+                    "token"=>$list->token,
+                    "created_at"=>$list->created_at,
+                );
+            }
+        }else{
+            $status = 401;
+            $message = "Forbidden";
+        }
+        
+        $response = array(
+            "status"=>$status,
+            "message"=>$message,
+            "metadata"=>$data_login,
+        );
+
+        return response()->json($response);
+        
     }
 
     public function store(Request $request){

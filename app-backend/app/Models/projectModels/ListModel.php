@@ -56,7 +56,8 @@ class ListModel extends Model
                 $project_link = env('HOST_NAME').env('FRONTEND_PORT')."/project/new/dashboard/".$code;
 
                 $revenue = $this->revenueModel->revenueTotal($po_number); 
-                $invoice = $this->batchProjectModel->invoice($po_number);
+                $invoice = $this->batchProjectModel->invoice($po_number); 
+                $cost = $this->batchProjectModel->cost($po_number); 
                 $bast = $this->bastModels->bastTotal($po_number);
 
                 // get status
@@ -93,6 +94,7 @@ class ListModel extends Model
                     "file_document"=>$file,
                     "project_link"=>$project_link,
                     "invoice"=>$invoice,
+                    "cost"=>$cost,
                     "bast"=>$bast,
                     "status"=>$status,
                 );

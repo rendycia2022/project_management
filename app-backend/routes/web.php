@@ -24,8 +24,11 @@ $router->group(['prefix' => 'api/'], function () use ($router) {
         $router->group(['prefix' => 'auth'], function () use ($router) {
         
             $router->post('/token','v2\auth\TokenController@store');
-            $router->get('/token/{token}','v2\auth\TokenController@get');
+            $router->get('/token','v2\auth\TokenController@get');
             $router->delete('/token/{token}','v2\auth\TokenController@destroy');
+
+            // login to project report apps
+            $router->get('/token/project_apps/{token}','v2\auth\TokenController@getLoginProject');
         });
 
     });

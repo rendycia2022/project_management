@@ -32,6 +32,7 @@ class ChartController extends BaseController
 
         $year = $request['year'];
         $statusRequest = $request['status'];
+        $projectRequest = $request['project'];
 
         $where = array(
             array('active', 1),
@@ -41,6 +42,7 @@ class ChartController extends BaseController
         // filtering data
         $raw = array();
         $optionYears = array();
+        $optionProjects = array();
 
         $count_list = count($list);
         if($count_list > 0){
@@ -48,6 +50,7 @@ class ChartController extends BaseController
                 $date_create = date_create($list[$i]['date']);
                 $date_formated = date_format($date_create,"Y");
 
+                // years fillter list
                 $optionYears[$date_formated] = $date_formated;
 
                 if($year == "All"){
@@ -57,6 +60,11 @@ class ChartController extends BaseController
                         $raw[] = $list[$i];
                     }
                 }
+
+                // project fillter list
+                $projectCode = $list[$i]['project']['code'];
+                $optionProjects[$projectCode] = $projectCode;
+
             }
         }
 
@@ -72,6 +80,20 @@ class ChartController extends BaseController
             }
 
             $raw = $filteredStatus;
+        }
+
+        // filltering project
+        if($projectRequest != "All"){
+            $count_raw = count($raw);
+            $fillteredProject = array();
+            for($j=0; $j<$count_raw; $j++){
+                $rawProject = $raw[$j]['project']['code'];
+                if($rawProject == $projectRequest){
+                    $fillteredProject[] = $raw[$j];
+                }
+            }
+
+            $raw = $fillteredProject;
         }
 
         // data chart builder
@@ -173,6 +195,11 @@ class ChartController extends BaseController
             $optionYears = array_values($optionYears);
             rsort($optionYears);
         }
+
+        if(count($optionProjects)>0){
+            $optionProjects = array_values($optionProjects);
+            rsort($optionProjects);
+        }
         
         // send to front
         $response = array(
@@ -181,6 +208,7 @@ class ChartController extends BaseController
             "raw"=>$raw,
             "year"=>$year,
             "optionYears"=>$optionYears,
+            "optionProjects"=>$optionProjects,
             "charts"=>$charts,
         );
 
