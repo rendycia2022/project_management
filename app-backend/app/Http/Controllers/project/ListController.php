@@ -58,6 +58,7 @@ class ListController extends BaseController
 
         $raw = array();
         $count_list = count($list);
+        $total_po_byProject = array();
         if($count_list > 0){
             for($i=0; $i<$count_list; $i++){
                 $date_create = date_create($list[$i]['date']);
@@ -74,6 +75,13 @@ class ListController extends BaseController
                 // project fillter list
                 $projectCode = $list[$i]['project']['code'];
                 $optionProjects[$projectCode] = $projectCode;
+
+                // count total PO
+                if(isset($total_po_byProject[$projectCode])){
+                    $total_po_byProject[$projectCode] = $total_po_byProject[$projectCode] + 1;
+                }else{
+                    $total_po_byProject[$projectCode] = 1;
+                }
             }
 
             // filtering status
@@ -109,6 +117,7 @@ class ListController extends BaseController
             "status"=>200,
             "message"=>"Ok.",
             "list"=>$raw,
+            "total_po_byProject"=>$total_po_byProject,
         );
 
         return response()->json($response);
