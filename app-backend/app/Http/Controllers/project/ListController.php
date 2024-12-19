@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Hash;
 
 // models
 use App\Models\projectModels\ListModel;
+use App\Models\projectModels\batchProjectModel;
 
 
 class ListController extends BaseController
@@ -22,6 +23,7 @@ class ListController extends BaseController
 
         // models
         $this->ListModel = new ListModel;
+        $this->batchProjectModel = new batchProjectModel;
         
 
     }
